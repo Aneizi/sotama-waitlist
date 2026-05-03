@@ -122,7 +122,7 @@ export default async function Page() {
               flexShrink: 0,
             }}
           />
-          <span className="hig-footnote">Building now · invites rolling out soon</span>
+          <span className="hig-footnote">Building now · invites will start rolling out during the beta.</span>
         </footer>
       </main>
     </>
