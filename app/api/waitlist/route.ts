@@ -1,14 +1,28 @@
 import { NextResponse } from "next/server";
-import { addEmail, getCount } from "@/lib/store";
+import { addEmail, diagnostics, getCount } from "@/lib/store";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
 
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/i;
 
-export async function GET() {
-  const count = await getCount();
-  return NextResponse.json({ count });
+export async function GET(req: Request) {
+  const url = new URL(req.url);
+  if (url.searchParams.get("diag") === "1") {
+    let countTried: number | string;
+    try {
+      countTried = await getCount();
+    } catch (err) {
+      countTried = err instanceof Error ? err.message : String(err);
+    }
+    return NextResponse.json({ ...diagnostics(), countTried });
+  }
+  try {
+    const count = await getCount();
+    return NextResponse.json({ count });
+  } catch {
+    return NextResponse.json({ count: 0 });
+  }
 }
 
 export async function POST(req: Request) {
@@ -49,9 +63,10 @@ export async function POST(req: Request) {
     });
     return res;
   } catch (err) {
+    const message = err instanceof Error ? err.message : String(err);
     console.error("[waitlist] add failed", err);
     return NextResponse.json(
-      { error: "Could not save right now. Try again." },
+      { error: "Could not save right now. Try again.", reason: message },
       { status: 500 },
     );
   }

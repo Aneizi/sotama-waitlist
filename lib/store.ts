@@ -1,4 +1,4 @@
-import { Redis } from "@upstash/redis";
+import { createClient, type RedisClientType } from "redis";
 import { promises as fs } from "node:fs";
 import path from "node:path";
 
@@ -7,15 +7,58 @@ const KEY_LIST = "sotama:waitlist:entries";
 
 type Entry = { email: string; ts: number; ref?: string };
 
-function getRedis(): Redis | null {
-  // Vercel marketplace integration injects KV_REST_API_URL/TOKEN.
-  // The @upstash/redis SDK also accepts UPSTASH_REDIS_* — support both.
-  const url =
-    process.env.KV_REST_API_URL ?? process.env.UPSTASH_REDIS_REST_URL;
-  const token =
-    process.env.KV_REST_API_TOKEN ?? process.env.UPSTASH_REDIS_REST_TOKEN;
-  if (!url || !token) return null;
-  return new Redis({ url, token });
+// Cache a single TCP connection per warm Lambda instance.
+const cache = ((globalThis as unknown as {
+  __sotamaRedis?: { client: RedisClientType | null; promise: Promise<RedisClientType | null> | null };
+}).__sotamaRedis ??= { client: null, promise: null });
+
+function findRedisUrl(): string | null {
+  return (
+    process.env.REDIS_URL ??
+    process.env.KV_URL ??
+    process.env.STORAGE_REDIS_URL ??
+    process.env.STORAGE_KV_URL ??
+    null
+  );
+}
+
+async function getClient(): Promise<RedisClientType | null> {
+  if (cache.client?.isOpen) return cache.client;
+  if (cache.promise) return cache.promise;
+  const url = findRedisUrl();
+  if (!url) return null;
+
+  cache.promise = (async () => {
+    const c = createClient({
+      url,
+      socket: { connectTimeout: 10_000, reconnectStrategy: false },
+    }) as RedisClientType;
+    c.on("error", (err) => console.error("[redis] client error", err));
+    await c.connect();
+    cache.client = c;
+    return c;
+  })();
+
+  try {
+    return await cache.promise;
+  } finally {
+    cache.promise = null;
+  }
+}
+
+export function diagnostics() {
+  const seen: string[] = [];
+  const interesting = /^(REDIS_|KV_|UPSTASH_|STORAGE_)/;
+  for (const k of Object.keys(process.env)) {
+    if (interesting.test(k)) seen.push(k);
+  }
+  return {
+    nodeEnv: process.env.NODE_ENV ?? "unknown",
+    vercelEnv: process.env.VERCEL_ENV ?? "unset",
+    region: process.env.VERCEL_REGION ?? "unset",
+    redisUrlPresent: !!findRedisUrl(),
+    seenEnvVarNames: seen.sort(),
+  };
 }
 
 const LOCAL_FILE = path.join(process.cwd(), ".waitlist.local.json");
@@ -38,19 +81,24 @@ export type AddResult = { added: boolean; count: number };
 
 export async function addEmail(email: string, ref?: string): Promise<AddResult> {
   const normalized = email.trim().toLowerCase();
-  const redis = getRedis();
+  const client = await getClient();
 
-  if (redis) {
-    const added = await redis.sadd(KEY_SET, normalized);
+  if (client) {
+    const added = await client.sAdd(KEY_SET, normalized);
     if (added) {
       const entry: Entry = { email: normalized, ts: Date.now(), ref };
-      await redis.lpush(KEY_LIST, JSON.stringify(entry));
+      await client.lPush(KEY_LIST, JSON.stringify(entry));
     }
-    const count = await redis.scard(KEY_SET);
+    const count = await client.sCard(KEY_SET);
     return { added: added === 1, count: Number(count) };
   }
 
-  // Local dev fallback — file-backed.
+  if (process.env.VERCEL) {
+    throw new Error(
+      "No REDIS_URL / KV_URL in environment. Connect Upstash Redis in the Vercel dashboard and redeploy.",
+    );
+  }
+
   const entries = await readLocal();
   const exists = entries.some((e) => e.email === normalized);
   if (!exists) {
@@ -61,11 +109,8 @@ export async function addEmail(email: string, ref?: string): Promise<AddResult> 
 }
 
 export async function getCount(): Promise<number> {
-  const redis = getRedis();
-  if (redis) {
-    const c = await redis.scard(KEY_SET);
-    return Number(c);
-  }
+  const client = await getClient();
+  if (client) return Number(await client.sCard(KEY_SET));
   const entries = await readLocal();
   return entries.length;
 }
