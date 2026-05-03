@@ -10,9 +10,6 @@ export const metadata: Metadata = {
     description: "One sentence. Auto mode. Always on.",
     type: "website",
   },
-  icons: {
-    icon: "/icon.svg",
-  },
 };
 
 export const viewport: Viewport = {

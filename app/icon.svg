@@ -1,7 +1,13 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="240 140 320 320" fill="none">
-  <path d="M 300 150 L 380 150 L 380 300 L 300 380 Z" fill="#0a0a0a"/>
-  <path d="M 300 420 L 380 340 L 380 450 L 300 450 Z" fill="#0a0a0a"/>
-  <path d="M 420 150 L 500 150 L 500 180 L 420 260 Z" fill="#0a0a0a"/>
-  <path d="M 420 300 L 500 220 L 500 450 L 420 450 Z" fill="#0a0a0a"/>
+  <style>
+    .mark { fill: #0a0a0a; }
+    @media (prefers-color-scheme: dark) {
+      .mark { fill: #f5f5f7; }
+    }
+  </style>
+  <path class="mark" d="M 300 150 L 380 150 L 380 300 L 300 380 Z"/>
+  <path class="mark" d="M 300 420 L 380 340 L 380 450 L 300 450 Z"/>
+  <path class="mark" d="M 420 150 L 500 150 L 500 180 L 420 260 Z"/>
+  <path class="mark" d="M 420 300 L 500 220 L 500 450 L 420 450 Z"/>
   <path d="M 260 446 L 260 434 L 540 154 L 540 166 Z" fill="#D85C30"/>
 </svg>
