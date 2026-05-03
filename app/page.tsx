@@ -54,7 +54,7 @@ export default async function Page() {
             width: "100%",
             maxWidth: "40rem",
             textAlign: "center",
-            marginBottom: "2.5rem",
+            marginBottom: "4rem",
           }}
         >
           <div className="fade-slide" style={{ marginBottom: "1.75rem", display: "inline-flex" }}>
@@ -74,14 +74,18 @@ export default async function Page() {
           >
             Solana automations,
             <br />
-            <span style={{ color: "var(--label-secondary)" }}>one sentence at a time.</span>
+            <span style={{ color: "var(--label-primary)", opacity: 0.78, fontWeight: 600 }}>
+              one sentence at a time.
+            </span>
           </h1>
 
           <p
             className="fade-slide-2 hig-body"
             style={{
               marginTop: "1.25rem",
-              color: "var(--label-secondary)",
+              color: "var(--label-primary)",
+              opacity: 0.85,
+              fontWeight: 500,
               fontSize: "1.125rem",
               lineHeight: "1.625rem",
               textWrap: "pretty",

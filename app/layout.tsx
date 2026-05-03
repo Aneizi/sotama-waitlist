@@ -2,11 +2,11 @@ import type { Metadata, Viewport } from "next";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "Sotama — Solana automations",
+  title: "Sotama",
   description:
     "Compose a single-sentence rule. Sotama runs it on auto mode. Join the waitlist for early access.",
   openGraph: {
-    title: "Sotama — Solana automations",
+    title: "Sotama",
     description: "One sentence. Auto mode. Always on.",
     type: "website",
   },
