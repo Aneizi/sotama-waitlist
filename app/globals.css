@@ -220,18 +220,33 @@ html, body {
   text-rendering: optimizeLegibility;
 }
 
-/* Hero / waitlist layout — built so the page fits in one viewport on mobile,
-   keeping the fixed orange band glued to the text. */
+/* Hero / waitlist layout — hero content centers in the viewport while the
+   social + invite-code group anchors to the page bottom. Page scrolls when
+   content exceeds the viewport so nothing is clipped on odd screen sizes. */
 .hero-main {
   position: relative;
   z-index: 1;
   min-height: 100vh;
   min-height: 100dvh;
+  display: grid;
+  grid-template-rows: 1fr auto;
+  padding: 6rem 1.5rem 2rem;
+  gap: 2rem;
+}
+.hero-content {
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  padding: 6rem 1.5rem 5rem;
+  width: 100%;
+}
+.hero-bottom {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-end;
+  width: 100%;
+  gap: 0.75rem;
 }
 .hero-header {
   width: 100%;
@@ -240,42 +255,36 @@ html, body {
   margin-bottom: 4rem;
 }
 .hero-footer {
-  margin-top: 4.5rem;
   display: flex;
   align-items: center;
+  justify-content: center;
   gap: 0.5rem;
   color: var(--label-tertiary);
+  text-align: center;
+}
+.hero-footer-link {
+  color: var(--label-secondary);
+  text-decoration: underline;
+  text-underline-offset: 0.2em;
+  text-decoration-thickness: 1px;
+  transition: color 120ms ease;
+}
+.hero-footer-link:hover {
+  color: var(--label-primary);
 }
 .hero-social {
-  margin-top: 1.25rem;
   display: flex;
   align-items: center;
   justify-content: center;
 }
 
 @media (max-width: 640px) {
-  /* No scroll on mobile — hero is the whole experience. */
-  html, body {
-    height: 100%;
-    overflow: hidden;
-    overscroll-behavior: none;
-  }
   .hero-main {
-    /* Asymmetric padding shifts the centered column up so the headline
-       lands on the orange band's center (~8rem above viewport center). */
-    padding: 2rem 1.25rem 7rem;
-    height: 100dvh;
-    min-height: 100dvh;
-    justify-content: center;
+    padding: 5rem 1.25rem 1.5rem;
+    gap: 1.5rem;
   }
   .hero-header {
     margin-bottom: 2rem;
-  }
-  .hero-footer {
-    margin-top: 2.25rem;
-  }
-  .hero-social {
-    margin-top: 0.75rem;
   }
 }
 

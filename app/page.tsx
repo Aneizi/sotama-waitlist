@@ -39,68 +39,67 @@ export default async function Page() {
       </div>
 
       <main className="hero-main">
-        <header className="hero-header">
-          <div className="fade-slide" style={{ marginBottom: "1.75rem", display: "inline-flex" }}>
-            <SotamaMark size={4.25} />
+        <div className="hero-content">
+          <header className="hero-header">
+            <div className="fade-slide" style={{ marginBottom: "1.75rem", display: "inline-flex" }}>
+              <SotamaMark size={4.25} />
+            </div>
+
+            <h1
+              className="fade-slide-1 hig-large-title"
+              style={{
+                margin: 0,
+                fontSize: "clamp(2.5rem, 6vw, 3.75rem)",
+                lineHeight: 1.05,
+                letterSpacing: "-0.022em",
+                fontWeight: 700,
+                color: "var(--label-primary)",
+              }}
+            >
+              Solana automations,
+              <br />
+              <span style={{ color: "var(--label-primary)", opacity: 0.78, fontWeight: 600 }}>
+                one sentence at a time.
+              </span>
+            </h1>
+
+            <p
+              className="fade-slide-2 hig-body"
+              style={{
+                marginTop: "1.25rem",
+                color: "var(--label-primary)",
+                opacity: 0.85,
+                fontWeight: 500,
+                fontSize: "1.125rem",
+                lineHeight: "1.625rem",
+                textWrap: "pretty",
+                maxWidth: "32rem",
+                marginLeft: "auto",
+                marginRight: "auto",
+              }}
+            >
+              Compose a rule. Sotama runs it on auto mode.
+            </p>
+          </header>
+
+          <div className="fade-slide-3" style={{ width: "100%", display: "flex", justifyContent: "center" }}>
+            <WaitlistForm initialCount={initialCount} initialJoined={initialJoined} />
           </div>
-
-          <h1
-            className="fade-slide-1 hig-large-title"
-            style={{
-              margin: 0,
-              fontSize: "clamp(2.5rem, 6vw, 3.75rem)",
-              lineHeight: 1.05,
-              letterSpacing: "-0.022em",
-              fontWeight: 700,
-              color: "var(--label-primary)",
-            }}
-          >
-            Solana automations,
-            <br />
-            <span style={{ color: "var(--label-primary)", opacity: 0.78, fontWeight: 600 }}>
-              one sentence at a time.
-            </span>
-          </h1>
-
-          <p
-            className="fade-slide-2 hig-body"
-            style={{
-              marginTop: "1.25rem",
-              color: "var(--label-primary)",
-              opacity: 0.85,
-              fontWeight: 500,
-              fontSize: "1.125rem",
-              lineHeight: "1.625rem",
-              textWrap: "pretty",
-              maxWidth: "32rem",
-              marginLeft: "auto",
-              marginRight: "auto",
-            }}
-          >
-            Compose a rule. Sotama runs it on auto mode.
-          </p>
-        </header>
-
-        <div className="fade-slide-3" style={{ width: "100%", display: "flex", justifyContent: "center" }}>
-          <WaitlistForm initialCount={initialCount} initialJoined={initialJoined} />
         </div>
 
-        <footer className="fade-slide-4 hero-footer">
-          <span
-            className="pulse-dot"
-            style={{
-              width: "0.5rem",
-              height: "0.5rem",
-              borderRadius: "999px",
-              background: "var(--green)",
-              flexShrink: 0,
-            }}
-          />
-          <span className="hig-footnote">Building now · invites will start rolling out during the beta.</span>
-        </footer>
+        <div className="hero-bottom">
+          <footer className="fade-slide-4 hero-footer">
+            <span className="hig-footnote">
+              Have an invite code?{" "}
+              <a href="https://beta.sotama.xyz" className="hero-footer-link">
+                Access the beta here
+              </a>
+            </span>
+          </footer>
 
-        <div className="fade-slide-4 hero-social">
-          <SocialLinks />
+          <div className="fade-slide-4 hero-social">
+            <SocialLinks />
+          </div>
         </div>
       </main>
     </>
